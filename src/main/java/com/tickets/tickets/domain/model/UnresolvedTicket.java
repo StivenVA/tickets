@@ -14,5 +14,5 @@ public class UnresolvedTicket {
 
     private Long id;
     private Ticket ticket;
-    private LocalDateTime createdAt;
+    private LocalDateTime storedAt;
 }

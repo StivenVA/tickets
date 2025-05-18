@@ -23,7 +23,7 @@ public class UnResolvedTicketEntity{
     @JoinColumn(name = "ticket_id")
     private TicketEntity ticketId;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(name = "stored_at")
+    private LocalDateTime storedAt;
 
 }

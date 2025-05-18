@@ -1,5 +1,7 @@
 package com.tickets.tickets;
 
+import com.tickets.tickets.application.dto.CreateTicketRequest;
+import com.tickets.tickets.application.dto.ResolveTicketRequest;
 import com.tickets.tickets.application.usecase.TicketUseCase;
 import com.tickets.tickets.application.usecase.UnresolvedTicketUseCase;
 import com.tickets.tickets.domain.model.Ticket;
@@ -31,11 +33,10 @@ class TicketControllerTest {
 
     @Test
     void createTicket_shouldReturnCreatedTicketWithDates() {
-        // Tiempo actual antes de la llamada
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Bogota"));
         LocalDateTime expiration = now.plusDays(30);
 
-        Ticket ticket = Ticket.builder()
+        CreateTicketRequest ticket = CreateTicketRequest.builder()
                 .title("Test")
                 .description("Desc")
                 .build();
@@ -67,14 +68,11 @@ class TicketControllerTest {
     void resolveTicket_shouldUpdateStatusToResolved() {
 
         LocalDateTime createdAt1 = LocalDateTime.of(2025, 1, 1, 10, 0);
-        LocalDateTime createdAt2 = LocalDateTime.of(2025, 1, 1, 10, 0); // Diferente
+        LocalDateTime createdAt2 = LocalDateTime.of(2025, 1, 1, 10, 0);
 
-        Ticket originalTicket = Ticket.builder()
+        ResolveTicketRequest originalTicket = ResolveTicketRequest.builder()
                 .id(1L)
-                .title("Sample")
-                .status("IN_PROGRESS")
-                .createdAt(createdAt1)
-                .updatedAt(createdAt1.plusDays(5))
+                .comment("Ticket completed")
                 .build();
 
         Ticket resolvedTicket = Ticket.builder()
@@ -93,7 +91,7 @@ class TicketControllerTest {
                 .updatedAt(LocalDateTime.now(ZoneId.of("America/Bogota")))
                 .build();
 
-        when(ticketUseCase.resolve(1L,null)).thenReturn(resolvedTicket);
+        when(ticketUseCase.resolve(originalTicket.getId(), originalTicket.getComment())).thenReturn(resolvedTicket);
 
         ResponseEntity<?> response = controller.resolveTicket(originalTicket);
 

@@ -9,7 +9,7 @@ public class UnresolvedTicketMapper {
         return UnresolvedTicket.builder()
                 .id(unresolvedTicketEntity.getId())
                 .ticket(TicketMapper.toModel(unresolvedTicketEntity.getTicketId()))
-                .createdAt(unresolvedTicketEntity.getCreatedAt())
+                .storedAt(unresolvedTicketEntity.getStoredAt())
                 .build();
     }
 
@@ -17,7 +17,7 @@ public class UnresolvedTicketMapper {
         return UnResolvedTicketEntity.builder()
                 .id(unresolvedTicket.getId())
                 .ticketId(TicketMapper.toEntity(unresolvedTicket.getTicket()))
-                .createdAt(unresolvedTicket.getCreatedAt())
+                .storedAt(unresolvedTicket.getStoredAt())
                 .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.tickets.tickets.infrastructure.persistence.mapper;
 
+import com.tickets.tickets.application.dto.ResponseTicket;
 import com.tickets.tickets.domain.model.Ticket;
 import com.tickets.tickets.infrastructure.persistence.entities.TicketEntity;
 import com.tickets.tickets.infrastructure.persistence.entities.TicketStatus;
@@ -28,6 +29,19 @@ public class TicketMapper {
             .updatedAt(model.getUpdatedAt())
                 .expiredAt(model.getExpiredAt())
             .comment(model.getComment())
+            .build();
+    }
+
+    public static ResponseTicket toResponseDTO(Ticket ticket) {
+        return ResponseTicket.builder()
+            .id(ticket.getId())
+            .title(ticket.getTitle())
+            .description(ticket.getDescription())
+            .status(ticket.getStatus())
+            .createdAt(ticket.getCreatedAt())
+                .updatedAt(ticket.getUpdatedAt())
+            .comment(ticket.getComment())
+                .expiredAt(ticket.getExpiredAt())
             .build();
     }
 }
