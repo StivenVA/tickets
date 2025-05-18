@@ -19,7 +19,7 @@ public class TicketService implements TicketUseCase {
     private final ZoneId colombiaZoneId = ZoneId.of("America/Bogota");
 
     @Override
-    public Ticket save(String title,String description) {
+    public Ticket create(String title, String description) {
 
         LocalDateTime now = LocalDateTime.now(colombiaZoneId);
 
@@ -35,12 +35,12 @@ public class TicketService implements TicketUseCase {
     }
 
     @Override
-    public List<Ticket> findAll() {
+    public List<Ticket> getAll() {
         return ticketRepository.findAll();
     }
 
     @Override
-    public Ticket findById(Long id) {
+    public Ticket getById(Long id) {
         return ticketRepository.findById(id);
     }
 

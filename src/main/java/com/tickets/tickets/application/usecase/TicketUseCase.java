@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface TicketUseCase {
 
-    Ticket save(String title, String description);
+    Ticket create(String title, String description);
 
-    Ticket findById(Long id);
+    Ticket getById(Long id);
 
-    List<Ticket> findAll();
+    List<Ticket> getAll();
 
     Ticket updateStatus(Ticket ticket);
 
