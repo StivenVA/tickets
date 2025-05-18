@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface UnresolvedTicketJPARepository extends JpaRepository<UnResolvedTicketEntity, Long> {
 
-    @Query("select u from UnResolvedTicketEntity u where u.createdAt > :dateThreshold")
+    @Query("select u from UnResolvedTicketEntity u where u.createdAt < :dateThreshold")
     List<UnResolvedTicketEntity> findPassed30Days(@Param("dateThreshold") LocalDateTime dateThreshold);
 
     @Procedure(name = "StoreUnresolvedTickets")

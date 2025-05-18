@@ -45,24 +45,42 @@ public class TicketService implements TicketUseCase {
     }
 
     @Override
-    public Ticket updateStatus(Ticket ticket){
+    public Ticket updateStatus(Long id) {
 
-        Ticket ticketToUpdate = ticketRepository.findById(ticket.getId());
-        ticketToUpdate.setStatus(ticket.getStatus());
-        ticketToUpdate.setUpdatedAt(LocalDateTime.now(colombiaZoneId).withNano(0));
+        Ticket ticketToUpdate = ticketRepository.findById(id);
 
-        if(ticket.getStatus().equals("Resolved") && ticket.getComment()!= null){
-            ticketToUpdate.setComment(ticket.getComment());
+        switch (ticketToUpdate.getStatus()){
+            case "OPEN" -> ticketToUpdate.setStatus("In Progress");
+            case "IN_PROGRESS" -> ticketToUpdate.setStatus("Resolved");
+            case "RESOLVED" -> ticketToUpdate.setStatus("Closed");
+            case "CLOSED" -> throw new IllegalArgumentException("Cannot change status of a close ticket");
+            default -> throw new IllegalArgumentException("Invalid status: ");
         }
+
+        ticketToUpdate.setUpdatedAt(LocalDateTime.now(colombiaZoneId).withNano(0));
 
         return ticketRepository.save(ticketToUpdate);
 
     }
 
     @Override
-    public Ticket resolve(Ticket ticket) {
-        ticket.setStatus("Resolved");
-        return updateStatus(ticket);
+    public Ticket resolve(Long id, String comment) {
+
+        Ticket ticketToSolve = ticketRepository.findById(id);
+
+        if(ticketToSolve.getStatus().equals("CLOSED")){
+            throw new IllegalArgumentException("Cannot resolve a closed ticket");
+        }
+
+        ticketToSolve.setStatus("Resolved");
+
+        if(comment != null && !comment.isEmpty()){
+            ticketToSolve.setComment(comment);
+        }
+
+        ticketToSolve.setUpdatedAt(LocalDateTime.now(colombiaZoneId).withNano(0));
+
+        return ticketRepository.save(ticketToSolve);
     }
 
 }

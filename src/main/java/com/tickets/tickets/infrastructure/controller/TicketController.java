@@ -22,9 +22,13 @@ public class TicketController {
 
     @PutMapping("/resolve")
     public ResponseEntity<?> resolveTicket(@RequestBody Ticket ticket) {
-        return ResponseEntity.ok(ticketUseCase.resolve(ticket));
+        return ResponseEntity.ok(ticketUseCase.resolve(ticket.getId(),ticket.getComment()));
     }
 
+    @PutMapping("update/{id}")
+    public ResponseEntity<?> updateTicket(@PathVariable Long id) {
+        return ResponseEntity.ok(ticketUseCase.updateStatus(id));
+    }
 
     @GetMapping
     public ResponseEntity<?> getAllTickets() {
@@ -37,7 +41,7 @@ public class TicketController {
     }
 
     @GetMapping("/unresolved")
-    public ResponseEntity<?> getUnresolvedTickets() {
+    public ResponseEntity<?> getUnresolvedTicketsPassed30Days() {
         return ResponseEntity.ok(unresolvedTicketUseCase.findPassed30Days());
     }
 }

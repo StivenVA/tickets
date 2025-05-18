@@ -12,7 +12,7 @@ public interface TicketUseCase {
 
     List<Ticket> getAll();
 
-    Ticket updateStatus(Ticket ticket);
+    Ticket updateStatus(Long id);
 
-    Ticket resolve(Ticket ticket);
+    Ticket resolve(Long id,String comment);
 }

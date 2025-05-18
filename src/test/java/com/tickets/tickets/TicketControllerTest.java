@@ -7,7 +7,6 @@ import com.tickets.tickets.domain.model.UnresolvedTicket;
 import com.tickets.tickets.infrastructure.controller.TicketController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
@@ -94,7 +93,7 @@ class TicketControllerTest {
                 .updatedAt(LocalDateTime.now(ZoneId.of("America/Bogota")))
                 .build();
 
-        when(ticketUseCase.resolve(originalTicket)).thenReturn(resolvedTicket);
+        when(ticketUseCase.resolve(1L,null)).thenReturn(resolvedTicket);
 
         ResponseEntity<?> response = controller.resolveTicket(originalTicket);
 
@@ -140,9 +139,11 @@ class TicketControllerTest {
 
         when(unresolvedTicketUseCase.findPassed30Days()).thenReturn((List<UnresolvedTicket>) unresolved);
 
-        ResponseEntity<?> response = controller.getUnresolvedTickets();
+        ResponseEntity<?> response = controller.getUnresolvedTicketsPassed30Days();
 
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(unresolved, response.getBody());
     }
+
+
 }
