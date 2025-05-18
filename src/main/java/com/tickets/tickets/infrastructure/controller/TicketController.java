@@ -3,10 +3,12 @@ package com.tickets.tickets.infrastructure.controller;
 import com.tickets.tickets.application.dto.CreateTicketRequest;
 import com.tickets.tickets.application.dto.ResolveTicketRequest;
 import com.tickets.tickets.application.dto.ResponseTicket;
+import com.tickets.tickets.application.dto.ResponseUnresolvedTicket;
 import com.tickets.tickets.application.usecase.TicketUseCase;
 import com.tickets.tickets.application.usecase.UnresolvedTicketUseCase;
 import com.tickets.tickets.domain.model.UnresolvedTicket;
 import com.tickets.tickets.infrastructure.persistence.mapper.TicketMapper;
+import com.tickets.tickets.infrastructure.persistence.mapper.UnresolvedTicketMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +49,7 @@ public class TicketController {
     }
 
     @GetMapping("/unresolved")
-    public ResponseEntity<List<UnresolvedTicket>> getUnresolvedTicketsPassed30Days() {
-        return ResponseEntity.ok(unresolvedTicketUseCase.findPassed30Days());
+    public ResponseEntity<List<ResponseUnresolvedTicket>> getUnresolvedTicketsPassed30Days() {
+        return ResponseEntity.ok(unresolvedTicketUseCase.findPassed30Days().stream().map(UnresolvedTicketMapper::toResponseDTO).toList());
     }
 }

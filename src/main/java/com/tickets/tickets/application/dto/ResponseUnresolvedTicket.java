@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UnresolvedTicketResponse {
+public class ResponseUnresolvedTicket {
     private ResponseTicket ticket;
     private LocalDateTime storedAt;
 }
