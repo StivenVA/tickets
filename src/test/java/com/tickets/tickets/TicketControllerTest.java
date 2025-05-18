@@ -9,7 +9,11 @@ import com.tickets.tickets.application.usecase.UnresolvedTicketUseCase;
 import com.tickets.tickets.domain.model.Ticket;
 import com.tickets.tickets.domain.model.UnresolvedTicket;
 import com.tickets.tickets.infrastructure.controller.TicketController;
+import com.tickets.tickets.infrastructure.controller.exception.ExceptionHandlerController;
+import com.tickets.tickets.infrastructure.controller.exception.ExceptionResponse;
+import com.tickets.tickets.infrastructure.controller.exception.TicketNotFoundException;
 import com.tickets.tickets.infrastructure.persistence.mapper.UnresolvedTicketMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +31,14 @@ class TicketControllerTest {
     private UnresolvedTicketUseCase unresolvedTicketUseCase;
     private TicketController controller;
 
+    private ExceptionHandlerController controllerExceptionHandler;
+
     @BeforeEach
     void setup() {
         ticketUseCase = mock(TicketUseCase.class);
         unresolvedTicketUseCase = mock(UnresolvedTicketUseCase.class);
         controller = new TicketController(ticketUseCase, unresolvedTicketUseCase);
+        controllerExceptionHandler = new ExceptionHandlerController();
     }
 
     @Test
@@ -57,7 +64,7 @@ class TicketControllerTest {
         ResponseEntity<ResponseTicket> response = controller.createTicket(ticket);
         ResponseTicket responseTicket =response.getBody();
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertNotNull(responseTicket);
         assertEquals("Test", responseTicket.getTitle());
         assertEquals("Desc", responseTicket.getDescription());
@@ -98,8 +105,8 @@ class TicketControllerTest {
 
         ResponseEntity<ResponseTicket> response = controller.resolveTicket(originalTicket);
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals("RESOLVED", (response.getBody()).getStatus());
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("RESOLVED", response.getBody().getStatus());
         assertNotSame(responseTicket, response.getBody());
         assertEquals(responseTicket, response.getBody());
         assertEquals(responseTicket.getUpdatedAt(), ( response.getBody()).getUpdatedAt());
@@ -117,7 +124,7 @@ class TicketControllerTest {
 
         ResponseEntity<List<ResponseTicket>> response = controller.getAllTickets();
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(responseTickets, response.getBody());
     }
 
@@ -146,7 +153,7 @@ class TicketControllerTest {
 
         ResponseEntity<ResponseTicket> response = controller.getTicketById(1L);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(responseTicket, response.getBody());
     }
 
@@ -170,8 +177,21 @@ class TicketControllerTest {
 
         ResponseEntity<List<ResponseUnresolvedTicket>> response = controller.getUnresolvedTicketsPassed30Days();
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(unresolvedResponse, response.getBody());
+    }
+
+    @Test
+    void get404CodeWhenTicketNotExist() {
+        when(ticketUseCase.getById(1L)).thenThrow(new TicketNotFoundException("No ticket with id 1"));
+
+        ResponseEntity<ExceptionResponse> response = controllerExceptionHandler.handleNotFound(
+                new TicketNotFoundException("No ticket with id 1"),
+                mock(HttpServletRequest.class)
+        );
+
+        assertEquals(404, response.getStatusCodeValue());
+        assertEquals("No ticket with id 1", response.getBody().message());
     }
 
 
