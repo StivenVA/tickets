@@ -8,4 +8,6 @@ public interface UnresolvedTicketUseCase {
 
     UnresolvedTicket save(UnresolvedTicket unresolvedTicket);
     List<UnresolvedTicket> findPassed30Days();
+
+    void runStoreUnresolvedTicketsProcedure();
 }
