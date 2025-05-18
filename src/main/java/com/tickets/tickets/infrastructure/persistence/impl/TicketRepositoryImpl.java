@@ -2,6 +2,7 @@ package com.tickets.tickets.infrastructure.persistence.impl;
 
 import com.tickets.tickets.domain.model.Ticket;
 import com.tickets.tickets.domain.repository.TicketRepository;
+import com.tickets.tickets.infrastructure.controller.exception.TicketNotFoundException;
 import com.tickets.tickets.infrastructure.persistence.entities.TicketEntity;
 import com.tickets.tickets.infrastructure.persistence.entities.TicketStatus;
 import com.tickets.tickets.infrastructure.persistence.jpa.TicketJPARepository;
@@ -26,7 +27,7 @@ public class TicketRepositoryImpl implements TicketRepository {
     @Override
     public Ticket findById(Long id) {
         return ticketJpaRepository.findById(id).map(TicketMapper::toModel).orElseThrow(()->
-                new RuntimeException("No ticket with id " + id));
+                new TicketNotFoundException("No ticket with id " + id));
     }
 
     @Override
