@@ -23,4 +23,8 @@ public class UnresolvedTicketService implements UnresolvedTicketUseCase {
     public List<UnresolvedTicket> findPassed30Days() {
         return unresolvedTicketRepository.findPassed30Days();
     }
+
+    public void runStoreUnresolvedTicketsProcedure() {
+        unresolvedTicketRepository.runStoreUnresolvedTicketsProcedure();
+    }
 }

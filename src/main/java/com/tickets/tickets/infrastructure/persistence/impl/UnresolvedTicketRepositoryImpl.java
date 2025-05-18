@@ -10,6 +10,7 @@ import com.tickets.tickets.infrastructure.persistence.mapper.UnresolvedTicketMap
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +22,8 @@ public class UnresolvedTicketRepositoryImpl implements UnresolvedTicketRepositor
 
     @Override
     public List<UnresolvedTicket> findPassed30Days() {
-        return unresolvedTicketJPARepository.findPassed30Days()
+        LocalDateTime dateThreshold = LocalDateTime.now().minusDays(30);
+        return unresolvedTicketJPARepository.findPassed30Days(dateThreshold)
                 .stream()
                 .map(UnresolvedTicketMapper::toModel).toList();
     }
@@ -34,6 +36,10 @@ public class UnresolvedTicketRepositoryImpl implements UnresolvedTicketRepositor
         return Optional.of(unresolvedTicketJPARepository.save(unResolvedTicketEntity))
                 .map(UnresolvedTicketMapper::toModel)
                 .orElseThrow(() -> new RuntimeException("An error occurred while saving the unresolved ticket"));
+    }
+
+    public void runStoreUnresolvedTicketsProcedure() {
+        unresolvedTicketJPARepository.storeUnresolvedTickets();
     }
 
 }

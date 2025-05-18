@@ -32,22 +32,11 @@ public class TicketRepositoryImpl implements TicketRepository {
     @Override
     public Ticket save(Ticket ticket) {
 
-        TicketEntity ticketEntity = mapToEntity(ticket);
+        TicketEntity ticketEntity = TicketMapper.toEntity(ticket);
 
-        return Optional.of(TicketMapper.toModel(ticketEntity))
+        return Optional.of(TicketMapper.toModel(ticketJpaRepository.save(ticketEntity)))
                 .orElseThrow(()-> new RuntimeException("An error occurred while saving the ticket"));
     }
 
-    private TicketEntity mapToEntity(Ticket ticket) {
-        return TicketEntity.builder()
-                .id(ticket.getId())
-                .title(ticket.getTitle())
-                .description(ticket.getDescription())
-                .status(TicketStatus.fromString(ticket.getStatus()))
-                .createdAt(ticket.getCreatedAt())
-                .updatedAt(ticket.getUpdatedAt())
-                .comment(ticket.getComment())
-                .build();
-    }
 
 }

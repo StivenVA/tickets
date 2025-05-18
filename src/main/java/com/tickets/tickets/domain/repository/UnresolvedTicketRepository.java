@@ -10,4 +10,5 @@ public interface UnresolvedTicketRepository {
 
     UnresolvedTicket save(UnresolvedTicket unresolvedTicket);
 
+    void runStoreUnresolvedTicketsProcedure();
 }

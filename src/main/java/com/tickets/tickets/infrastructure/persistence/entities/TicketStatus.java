@@ -1,5 +1,8 @@
 package com.tickets.tickets.infrastructure.persistence.entities;
 
+import lombok.Getter;
+
+@Getter
 public enum TicketStatus {
 
     OPEN("Open", "Abierto"),
@@ -13,14 +16,6 @@ public enum TicketStatus {
     TicketStatus(String statusEn, String statusEs) {
         this.statusEn = statusEn;
         this.statusEs = statusEs;
-    }
-
-    public String getStatusEn() {
-        return statusEn;
-    }
-
-    public String getStatusEs() {
-        return statusEs;
     }
 
     public static TicketStatus fromString(String status) {

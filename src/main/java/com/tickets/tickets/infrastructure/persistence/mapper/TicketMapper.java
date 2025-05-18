@@ -13,18 +13,20 @@ public class TicketMapper {
             .status(entity.getStatus().name())
             .createdAt(entity.getCreatedAt())
             .updatedAt(entity.getUpdatedAt())
+                .expiredAt(entity.getExpiredAt())
             .comment(entity.getComment())
             .build();
     }
 
     public static TicketEntity toEntity(Ticket model) {
         return TicketEntity.builder()
-            .id(model.getId())
+            .id(model.getId()==null?0:model.getId())
             .title(model.getTitle())
             .description(model.getDescription())
-            .status(TicketStatus.valueOf(model.getStatus()))
+            .status(TicketStatus.fromString(model.getStatus()))
             .createdAt(model.getCreatedAt())
             .updatedAt(model.getUpdatedAt())
+                .expiredAt(model.getExpiredAt())
             .comment(model.getComment())
             .build();
     }

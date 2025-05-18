@@ -21,14 +21,14 @@ public class TicketService implements TicketUseCase {
     @Override
     public Ticket create(String title, String description) {
 
-        LocalDateTime now = LocalDateTime.now(colombiaZoneId);
+        LocalDateTime now = LocalDateTime.now(colombiaZoneId).withNano(0);
 
         Ticket ticket = Ticket.builder()
                 .createdAt(now)
                 .status("Open")
                 .title(title)
                 .description(description)
-                .expiredAt(LocalDateTime.of(now.toLocalDate(), LocalTime.MAX))
+                .expiredAt(LocalDateTime.of(now.toLocalDate(), LocalTime.MAX).withNano(0))
                 .build();
 
         return ticketRepository.save(ticket);
@@ -49,7 +49,7 @@ public class TicketService implements TicketUseCase {
 
         Ticket ticketToUpdate = ticketRepository.findById(ticket.getId());
         ticketToUpdate.setStatus(ticket.getStatus());
-        ticketToUpdate.setUpdatedAt(LocalDateTime.now(colombiaZoneId));
+        ticketToUpdate.setUpdatedAt(LocalDateTime.now(colombiaZoneId).withNano(0));
 
         if(ticket.getStatus().equals("Resolved") && ticket.getComment()!= null){
             ticketToUpdate.setComment(ticket.getComment());

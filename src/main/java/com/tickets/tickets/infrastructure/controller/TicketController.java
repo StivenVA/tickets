@@ -25,6 +25,7 @@ public class TicketController {
         return ResponseEntity.ok(ticketUseCase.resolve(ticket));
     }
 
+
     @GetMapping
     public ResponseEntity<?> getAllTickets() {
         return ResponseEntity.ok(ticketUseCase.getAll());
