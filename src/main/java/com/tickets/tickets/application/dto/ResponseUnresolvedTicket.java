@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode
 public class ResponseUnresolvedTicket {
     private ResponseTicket ticket;
     private LocalDateTime storedAt;

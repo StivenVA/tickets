@@ -5,7 +5,10 @@ import com.tickets.tickets.domain.model.Ticket;
 import com.tickets.tickets.infrastructure.persistence.entities.TicketEntity;
 import com.tickets.tickets.infrastructure.persistence.entities.TicketStatus;
 
-public class TicketMapper {
+public final class TicketMapper {
+
+    private TicketMapper() {}
+
     public static Ticket toModel(TicketEntity entity) {
         return Ticket.builder()
             .id(entity.getId())

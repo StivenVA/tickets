@@ -2,11 +2,14 @@ package com.tickets.tickets;
 
 import com.tickets.tickets.application.dto.CreateTicketRequest;
 import com.tickets.tickets.application.dto.ResolveTicketRequest;
+import com.tickets.tickets.application.dto.ResponseTicket;
+import com.tickets.tickets.application.dto.ResponseUnresolvedTicket;
 import com.tickets.tickets.application.usecase.TicketUseCase;
 import com.tickets.tickets.application.usecase.UnresolvedTicketUseCase;
 import com.tickets.tickets.domain.model.Ticket;
 import com.tickets.tickets.domain.model.UnresolvedTicket;
 import com.tickets.tickets.infrastructure.controller.TicketController;
+import com.tickets.tickets.infrastructure.persistence.mapper.UnresolvedTicketMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +54,8 @@ class TicketControllerTest {
 
         when(ticketUseCase.create("Test", "Desc")).thenReturn(created);
 
-        ResponseEntity<?> response = controller.createTicket(ticket);
-        Ticket responseTicket = (Ticket) response.getBody();
+        ResponseEntity<ResponseTicket> response = controller.createTicket(ticket);
+        ResponseTicket responseTicket =response.getBody();
 
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(responseTicket);
@@ -83,7 +86,7 @@ class TicketControllerTest {
                 .updatedAt(LocalDateTime.now(ZoneId.of("America/Bogota")))
                 .build();
 
-        Ticket responseTicket = Ticket.builder()
+        ResponseTicket responseTicket = ResponseTicket.builder()
                 .id(1L)
                 .title("Sample")
                 .status("RESOLVED")
@@ -93,14 +96,14 @@ class TicketControllerTest {
 
         when(ticketUseCase.resolve(originalTicket.getId(), originalTicket.getComment())).thenReturn(resolvedTicket);
 
-        ResponseEntity<?> response = controller.resolveTicket(originalTicket);
+        ResponseEntity<ResponseTicket> response = controller.resolveTicket(originalTicket);
 
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals("RESOLVED", ((Ticket) response.getBody()).getStatus());
+        assertEquals("RESOLVED", (response.getBody()).getStatus());
         assertNotSame(responseTicket, response.getBody());
         assertEquals(responseTicket, response.getBody());
-        assertEquals(responseTicket.getUpdatedAt(), ((Ticket) response.getBody()).getUpdatedAt());
-        assertEquals(responseTicket.getCreatedAt(), ((Ticket) response.getBody()).getCreatedAt());
+        assertEquals(responseTicket.getUpdatedAt(), ( response.getBody()).getUpdatedAt());
+        assertEquals(responseTicket.getCreatedAt(), (response.getBody()).getCreatedAt());
         assertEquals(responseTicket, response.getBody());
     }
 
@@ -108,39 +111,67 @@ class TicketControllerTest {
     void getAllTickets_shouldReturnList() {
         List<Ticket> tickets = List.of(new Ticket(), new Ticket());
 
+        List<ResponseTicket> responseTickets = List.of(new ResponseTicket(), new ResponseTicket());
+
         when(ticketUseCase.getAll()).thenReturn(tickets);
 
-        ResponseEntity<?> response = controller.getAllTickets();
+        ResponseEntity<List<ResponseTicket>> response = controller.getAllTickets();
 
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(tickets, response.getBody());
+        assertEquals(responseTickets, response.getBody());
     }
 
     @Test
     void getTicketById_shouldReturnTicket() {
+
+        LocalDateTime createdAt = LocalDateTime.now(ZoneId.of("America/Bogota"));
+
         Ticket ticket = Ticket.builder()
                 .id(1L)
                 .title("Example")
+                .description("Description")
+                .status("OPEN")
+                .createdAt(createdAt)
+                .build();
+
+        ResponseTicket responseTicket = ResponseTicket.builder()
+                .id(1L)
+                .title("Example")
+                .description("Description")
+                .status("OPEN")
+                .createdAt(createdAt)
                 .build();
 
         when(ticketUseCase.getById(1L)).thenReturn(ticket);
 
-        ResponseEntity<?> response = controller.getTicketById(1L);
+        ResponseEntity<ResponseTicket> response = controller.getTicketById(1L);
 
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(ticket, response.getBody());
+        assertEquals(responseTicket, response.getBody());
     }
 
     @Test
     void getUnresolvedTickets_shouldReturnList() {
-        List<?> unresolved = List.of(new Object());
+        Ticket ticket = new Ticket();
 
-        when(unresolvedTicketUseCase.findPassed30Days()).thenReturn((List<UnresolvedTicket>) unresolved);
+        UnresolvedTicket unresolvedTicket = new UnresolvedTicket();
+        unresolvedTicket.setTicket(ticket);
 
-        ResponseEntity<?> response = controller.getUnresolvedTicketsPassed30Days();
+        List<UnresolvedTicket> unresolved = List.of(unresolvedTicket);
+
+        ResponseTicket responseTicket = new ResponseTicket();
+
+        ResponseUnresolvedTicket responseUnresolvedTicket = new ResponseUnresolvedTicket();
+        responseUnresolvedTicket.setTicket(responseTicket);
+
+        List<ResponseUnresolvedTicket> unresolvedResponse = List.of(responseUnresolvedTicket);
+
+        when(unresolvedTicketUseCase.findPassed30Days()).thenReturn(unresolved);
+
+        ResponseEntity<List<ResponseUnresolvedTicket>> response = controller.getUnresolvedTicketsPassed30Days();
 
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(unresolved, response.getBody());
+        assertEquals(unresolvedResponse, response.getBody());
     }
 
 

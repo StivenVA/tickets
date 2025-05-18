@@ -4,7 +4,9 @@ import com.tickets.tickets.application.dto.ResponseUnresolvedTicket;
 import com.tickets.tickets.domain.model.UnresolvedTicket;
 import com.tickets.tickets.infrastructure.persistence.entities.UnResolvedTicketEntity;
 
-public class UnresolvedTicketMapper {
+public final class UnresolvedTicketMapper {
+
+    private UnresolvedTicketMapper() {}
 
     public static UnresolvedTicket toModel(UnResolvedTicketEntity unresolvedTicketEntity) {
         return UnresolvedTicket.builder()
