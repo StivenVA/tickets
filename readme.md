@@ -98,12 +98,15 @@ END
 
 You may customize this trigger to fit your requirements.
 
-## Step 5: Run the Docker Container
+## Step 5: Run the application
 Once everything is set up, you can run your Spring Boot application using the Docker image you built earlier:
 
 ```
 docker run -p 8080:8080 tickets
 ```
+
+Or for the case you are running sql server locally run the application with your IDE
+
 Your application will be available at: http://localhost:8080
 
 ## Notes
